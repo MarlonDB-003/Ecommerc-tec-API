@@ -1,11 +1,45 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TechWorld.Domain.Entities;
+using TechWorld.Infrastructure.Identity;
 
 namespace TechWorld.Infrastructure.Persistence;
 
 public static class DataSeeder
 {
-    public static async Task SeedAsync(ApplicationDbContext context)
+    public static async Task SeedAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    {
+        await SeedAdminAsync(userManager, context);
+        await SeedProductsAsync(context);
+    }
+
+    private static async Task SeedAdminAsync(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+    {
+        const string adminEmail = "admin@techworld.com";
+
+        if (await userManager.FindByEmailAsync(adminEmail) is not null)
+            return;
+
+        var admin = new ApplicationUser
+        {
+            Email = adminEmail,
+            UserName = adminEmail,
+            DisplayName = "Admin",
+            IsAdmin = true,
+            EmailConfirmed = true
+        };
+
+        var result = await userManager.CreateAsync(admin, "Admin@123");
+        if (!result.Succeeded)
+            throw new InvalidOperationException(
+                $"Falha ao criar admin: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+
+        var profile = UserProfile.Create(admin.Id, "Admin");
+        await context.UserProfiles.AddAsync(profile);
+        await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedProductsAsync(ApplicationDbContext context)
     {
         if (await context.Products.AnyAsync())
             return;

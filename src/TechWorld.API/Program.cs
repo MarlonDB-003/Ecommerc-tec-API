@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 using TechWorld.API.Middleware;
 using TechWorld.Application;
 using TechWorld.Infrastructure;
+using TechWorld.Infrastructure.Identity;
 using TechWorld.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,7 +44,8 @@ if (app.Environment.IsDevelopment())
 
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await DataSeeder.SeedAsync(db);
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    await DataSeeder.SeedAsync(db, userManager);
 }
 
 app.UseHttpsRedirection();
