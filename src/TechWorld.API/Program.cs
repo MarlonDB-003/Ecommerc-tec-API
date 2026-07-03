@@ -2,6 +2,7 @@ using Serilog;
 using TechWorld.API.Middleware;
 using TechWorld.Application;
 using TechWorld.Infrastructure;
+using TechWorld.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TechWorld API v1"));
+
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await DataSeeder.SeedAsync(db);
 }
 
 app.UseHttpsRedirection();
