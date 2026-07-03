@@ -1,0 +1,17 @@
+{
+  "ConnectionStrings": {
+    "Default": "Host=localhost;Port=5432;Database=techworlddb;Username=postgres;Password=YOUR_PASSWORD"
+  },
+  "JwtSettings": {
+    "Secret": "YOUR-DEV-SECRET-KEY-MIN-32-CHARS"
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Debug",
+      "Override": {
+        "Microsoft": "Information",
+        "Microsoft.EntityFrameworkCore.Database.Command": "Information"
+      }
+    }
+  }
+}

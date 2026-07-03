@@ -1,0 +1,50 @@
+## Build outputs
+bin/
+obj/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+## .NET local tools
+.dotnet/
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+
+## Sensitive configuration — never commit real secrets
+appsettings.Development.json
+appsettings.*.local.json
+.env
+.env.*
+!.env.example
+
+## User Secrets (managed by dotnet user-secrets)
+secrets.json
+
+## Logs
+logs/
+*.log
+
+## OS artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## Test results
+TestResults/
+coverage/
+*.trx
+*.coveragexml
+
+## JetBrains Rider
+.idea/
+
+## Visual Studio Code
+.vscode/

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TechWorld.API/TechWorld.API.csproj" />
+    <Project Path="src/TechWorld.Application/TechWorld.Application.csproj" />
+    <Project Path="src/TechWorld.Domain/TechWorld.Domain.csproj" />
+    <Project Path="src/TechWorld.Infrastructure/TechWorld.Infrastructure.csproj" />
+  </Folder>
+</Solution>
