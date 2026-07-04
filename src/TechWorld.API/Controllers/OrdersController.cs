@@ -13,9 +13,12 @@ namespace TechWorld.API.Controllers;
 public class OrdersController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetMyOrders(CancellationToken ct)
+    public async Task<IActionResult> GetMyOrders(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken ct = default)
     {
-        var result = await mediator.Send(new GetMyOrdersQuery(), ct);
+        var result = await mediator.Send(new GetMyOrdersQuery(page, pageSize), ct);
         return Ok(result);
     }
 
