@@ -50,7 +50,7 @@ public class AuthService(
         var user = await userManager.FindByEmailAsync(command.Email)
             ?? throw new UnauthorizedAccessException("Credenciais inválidas.");
 
-        var result = await signInManager.CheckPasswordSignInAsync(user, command.Password, lockoutOnFailure: false);
+        var result = await signInManager.CheckPasswordSignInAsync(user, command.Password, lockoutOnFailure: true);
         if (!result.Succeeded)
             throw new UnauthorizedAccessException("Credenciais inválidas.");
 

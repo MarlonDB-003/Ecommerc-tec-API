@@ -10,6 +10,8 @@ public class GetProductsQueryHandler(IProductRepository productRepository, IMapp
 {
     public async Task<PagedList<ProductListDto>> Handle(GetProductsQuery request, CancellationToken ct)
     {
+        var safePageSize = Math.Clamp(request.PageSize, 1, 100);
+
         var (items, totalCount) = await productRepository.GetPagedAsync(
             request.Category,
             request.Search,
@@ -18,11 +20,11 @@ public class GetProductsQueryHandler(IProductRepository productRepository, IMapp
             request.SortBy,
             request.Ascending,
             request.Page,
-            request.PageSize,
+            safePageSize,
             ct);
 
         var dtos = mapper.Map<IEnumerable<ProductListDto>>(items);
 
-        return PagedList<ProductListDto>.Create(dtos, totalCount, request.Page, request.PageSize);
+        return PagedList<ProductListDto>.Create(dtos, totalCount, request.Page, safePageSize);
     }
 }

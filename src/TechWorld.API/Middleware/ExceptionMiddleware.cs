@@ -32,7 +32,9 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
             UnauthorizedAccessException => (401, "Não autorizado", exception.Message),
             DomainException => (422, "Regra de negócio", exception.Message),
             InvalidOperationException => (400, "Operação inválida", exception.Message),
-            DbUpdateException dbu => (500, "Erro de banco de dados", dbu.InnerException?.Message ?? dbu.Message),
+            DbUpdateException dbu => (500, "Erro de banco de dados", env.IsDevelopment()
+                ? dbu.InnerException?.Message ?? dbu.Message
+                : "Ocorreu um erro ao processar sua solicitação."),
             _ => (500, "Erro interno", env.IsDevelopment()
                 ? $"{exception.GetType().Name}: {exception.Message}"
                 : "Ocorreu um erro inesperado.")

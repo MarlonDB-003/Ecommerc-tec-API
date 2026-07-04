@@ -1,0 +1,75 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: techworld-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: techworlddb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Port NOT exposed to host — accessible only within backend-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d techworlddb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: techworld-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=techworlddb;Username=postgres;Password=${DB_PASSWORD}"
+      JwtSettings__Secret: ${JWT_SECRET}
+      JwtSettings__Issuer: TechWorld
+      JwtSettings__Audience: TechWorldClient
+      JwtSettings__ExpiresInMinutes: 60
+      Cloudinary__CloudName: ${CLOUDINARY_CLOUD_NAME:-}
+      Cloudinary__ApiKey: ${CLOUDINARY_API_KEY:-}
+      Cloudinary__ApiSecret: ${CLOUDINARY_API_SECRET:-}
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD}
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5274
+    ports:
+      - "5274:5274"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5274/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - backend-net
+      - frontend-net
+
+  frontend:
+    build:
+      context: ../Ecommerc-tec
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ""
+    container_name: techworld-frontend
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    networks:
+      - frontend-net
+
+networks:
+  backend-net:
+  frontend-net:
+
+volumes:
+  postgres_data:
