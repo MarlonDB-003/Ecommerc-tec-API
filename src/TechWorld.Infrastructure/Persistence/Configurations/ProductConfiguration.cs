@@ -14,6 +14,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Price).HasPrecision(10, 2).IsRequired();
         builder.Property(p => p.ImageUrl).HasMaxLength(500);
         builder.Property(p => p.Category).IsRequired().HasMaxLength(50);
+        builder.Property(p => p.Brand).HasMaxLength(100);
         builder.Property(p => p.Stock).HasDefaultValue(0);
         builder.Property(p => p.IsActive).HasDefaultValue(true);
         builder.Property(p => p.DiscountPercentage).HasDefaultValue(0);

@@ -24,7 +24,7 @@ public class UpdateProductCommandHandler(
             ?? throw new NotFoundException(nameof(Product), request.Id);
 
         product.Update(request.Name, request.Price, request.Category,
-            request.Description, request.ImageUrl, request.Stock, request.DiscountPercentage);
+            request.Description, request.ImageUrl, request.Stock, request.DiscountPercentage, request.Brand);
 
         var oldSpecs = product.Specifications.ToList();
         var newSpecs = (request.Specifications ?? []).Select((s, i) =>

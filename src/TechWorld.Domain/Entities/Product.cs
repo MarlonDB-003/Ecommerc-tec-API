@@ -10,6 +10,7 @@ public class Product : BaseEntity
     public decimal Price { get; private set; }
     public string? ImageUrl { get; private set; }
     public string Category { get; private set; } = string.Empty;
+    public string? Brand { get; private set; }
     public int Stock { get; private set; }
     public bool IsActive { get; private set; } = true;
     public int DiscountPercentage { get; private set; }
@@ -26,7 +27,8 @@ public class Product : BaseEntity
         string? description = null,
         string? imageUrl = null,
         int stock = 0,
-        int discountPercentage = 0)
+        int discountPercentage = 0,
+        string? brand = null)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new DomainException("Nome do produto é obrigatório.");
@@ -43,7 +45,8 @@ public class Product : BaseEntity
             Description = description,
             ImageUrl = imageUrl,
             Stock = stock,
-            DiscountPercentage = discountPercentage
+            DiscountPercentage = discountPercentage,
+            Brand = brand
         };
     }
 
@@ -54,7 +57,8 @@ public class Product : BaseEntity
         string? description,
         string? imageUrl,
         int stock,
-        int discountPercentage)
+        int discountPercentage,
+        string? brand)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new DomainException("Nome do produto é obrigatório.");
@@ -70,6 +74,7 @@ public class Product : BaseEntity
         ImageUrl = imageUrl;
         Stock = stock;
         DiscountPercentage = discountPercentage;
+        Brand = brand;
         SetUpdatedAt();
     }
 

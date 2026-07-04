@@ -13,5 +13,6 @@ public record UpdateProductCommand(
     string? ImageUrl,
     int Stock,
     int DiscountPercentage,
-    IEnumerable<SpecificationInput> Specifications
+    IEnumerable<SpecificationInput> Specifications,
+    string? Brand
 ) : IRequest<ProductDetailDto>;

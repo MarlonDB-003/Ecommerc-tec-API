@@ -23,7 +23,7 @@ public class CreateProductCommandHandler(
         var product = Product.Create(
             request.Name, request.Price, request.Category,
             request.Description, request.ImageUrl,
-            request.Stock, request.DiscountPercentage);
+            request.Stock, request.DiscountPercentage, request.Brand);
 
         var specs = (request.Specifications ?? []).Select((s, i) =>
             ProductSpecification.Create(product.Id, s.Label, s.Value, s.DisplayOrder > 0 ? s.DisplayOrder : i)).ToList();

@@ -10,6 +10,7 @@ public interface IProductRepository
         string? category,
         string? search,
         bool? isActive,
+        string? brand,
         string sortBy,
         bool ascending,
         int page,

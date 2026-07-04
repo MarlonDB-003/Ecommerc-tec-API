@@ -19,6 +19,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
         [FromQuery] string? category,
         [FromQuery] string? search,
         [FromQuery] bool? isActive,
+        [FromQuery] string? brand = null,
         [FromQuery] string sortBy = "createdat",
         [FromQuery] bool ascending = false,
         [FromQuery] int page = 1,
@@ -26,7 +27,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
         CancellationToken ct = default)
     {
         var result = await mediator.Send(
-            new GetProductsQuery(category, search, isActive, sortBy, ascending, page, pageSize), ct);
+            new GetProductsQuery(category, search, isActive, brand, sortBy, ascending, page, pageSize), ct);
         return Ok(result);
     }
 
@@ -62,7 +63,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
         var command = new UpdateProductCommand(
             id, request.Name, request.Price, request.Category,
             request.Description, request.ImageUrl, request.Stock,
-            request.DiscountPercentage, request.Specifications);
+            request.DiscountPercentage, request.Specifications, request.Brand);
         var result = await mediator.Send(command, ct);
         return Ok(result);
     }
@@ -84,4 +85,5 @@ public record UpdateProductRequest(
     string? ImageUrl,
     int Stock,
     int DiscountPercentage,
-    IEnumerable<SpecificationInput> Specifications);
+    IEnumerable<SpecificationInput> Specifications,
+    string? Brand);

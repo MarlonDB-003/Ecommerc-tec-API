@@ -18,6 +18,7 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
         string? category,
         string? search,
         bool? isActive,
+        string? brand,
         string sortBy,
         bool ascending,
         int page,
@@ -28,6 +29,9 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
 
         if (!string.IsNullOrWhiteSpace(category) && category.ToLower() != "todos")
             query = query.Where(p => p.Category.ToLower() == category.ToLower());
+
+        if (!string.IsNullOrWhiteSpace(brand))
+            query = query.Where(p => p.Brand != null && p.Brand.ToLower() == brand.ToLower());
 
         if (!string.IsNullOrWhiteSpace(search))
             query = query.Where(p => p.Name.ToLower().Contains(search.ToLower()) ||

@@ -13,5 +13,6 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
         RuleFor(x => x.DiscountPercentage).InclusiveBetween(0, 100);
         RuleFor(x => x.Description).MaximumLength(2000).When(x => x.Description != null);
         RuleFor(x => x.ImageUrl).MaximumLength(500).When(x => x.ImageUrl != null);
+        RuleFor(x => x.Brand).MaximumLength(100).When(x => x.Brand != null);
     }
 }

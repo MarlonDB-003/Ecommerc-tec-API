@@ -14,6 +14,7 @@ public class GetProductsQueryHandler(IProductRepository productRepository, IMapp
             request.Category,
             request.Search,
             request.IsActive,
+            request.Brand,
             request.SortBy,
             request.Ascending,
             request.Page,

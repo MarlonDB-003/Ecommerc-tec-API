@@ -8,6 +8,7 @@ public record ProductDetailDto(
     decimal DiscountedPrice,
     string? ImageUrl,
     string Category,
+    string? Brand,
     int Stock,
     bool IsActive,
     int DiscountPercentage,

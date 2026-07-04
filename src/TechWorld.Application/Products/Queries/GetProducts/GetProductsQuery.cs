@@ -7,6 +7,7 @@ public record GetProductsQuery(
     string? Category,
     string? Search,
     bool? IsActive,
+    string? Brand = null,
     string SortBy = "createdat",
     bool Ascending = false,
     int Page = 1,
