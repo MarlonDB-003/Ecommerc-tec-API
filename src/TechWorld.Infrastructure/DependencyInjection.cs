@@ -64,6 +64,7 @@ public static class DependencyInjection
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IImageStorageService, CloudinaryImageStorageService>();
         services.AddHttpContextAccessor();
 
         return services;
