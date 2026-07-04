@@ -19,4 +19,5 @@ public interface IProductRepository
     Task AddAsync(Product product, CancellationToken ct = default);
     void Update(Product product);
     void Remove(Product product);
+    Task ReplaceSpecificationsAsync(IEnumerable<ProductSpecification> oldSpecs, IEnumerable<ProductSpecification> newSpecs, CancellationToken ct = default);
 }

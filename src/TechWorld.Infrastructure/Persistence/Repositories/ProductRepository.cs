@@ -70,4 +70,10 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
     public void Update(Product product) => db.Products.Update(product);
 
     public void Remove(Product product) => db.Products.Remove(product);
+
+    public async Task ReplaceSpecificationsAsync(IEnumerable<ProductSpecification> oldSpecs, IEnumerable<ProductSpecification> newSpecs, CancellationToken ct = default)
+    {
+        db.ProductSpecifications.RemoveRange(oldSpecs);
+        await db.ProductSpecifications.AddRangeAsync(newSpecs, ct);
+    }
 }

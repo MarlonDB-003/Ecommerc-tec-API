@@ -26,11 +26,13 @@ public class UpdateProductCommandHandler(
         product.Update(request.Name, request.Price, request.Category,
             request.Description, request.ImageUrl, request.Stock, request.DiscountPercentage);
 
-        var newSpecs = request.Specifications.Select((s, i) =>
+        var oldSpecs = product.Specifications.ToList();
+        var newSpecs = (request.Specifications ?? []).Select((s, i) =>
             ProductSpecification.Create(product.Id, s.Label, s.Value, s.DisplayOrder > 0 ? s.DisplayOrder : i)).ToList();
 
+        await productRepository.ReplaceSpecificationsAsync(oldSpecs, newSpecs, ct);
         product.SetSpecifications(newSpecs);
-        productRepository.Update(product);
+
         await unitOfWork.SaveChangesAsync(ct);
 
         return mapper.Map<ProductDetailDto>(product);

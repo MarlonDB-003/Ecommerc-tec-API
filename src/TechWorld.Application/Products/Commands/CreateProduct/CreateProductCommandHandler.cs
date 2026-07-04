@@ -25,16 +25,13 @@ public class CreateProductCommandHandler(
             request.Description, request.ImageUrl,
             request.Stock, request.DiscountPercentage);
 
-        await productRepository.AddAsync(product, ct);
-        await unitOfWork.SaveChangesAsync(ct);
-
-        var specs = request.Specifications.Select((s, i) =>
+        var specs = (request.Specifications ?? []).Select((s, i) =>
             ProductSpecification.Create(product.Id, s.Label, s.Value, s.DisplayOrder > 0 ? s.DisplayOrder : i)).ToList();
 
         product.SetSpecifications(specs);
 
-        if (specs.Count > 0)
-            await unitOfWork.SaveChangesAsync(ct);
+        await productRepository.AddAsync(product, ct);
+        await unitOfWork.SaveChangesAsync(ct);
 
         return mapper.Map<ProductDetailDto>(product);
     }

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"C:\\\\Users\\\\marlo\\\\OneDrive\\\\Área de Trabalho\\\\Projetos - Pessoal\\\\Ecommerc-tec\")",
+      "Read(//c/Users/marlo/OneDrive/Área de Trabalho/Projetos - Pessoal/Ecommerc-tec/**)"
+    ]
+  }
+}

@@ -20,8 +20,7 @@ public class DeleteProductCommandHandler(
         var product = await productRepository.GetByIdAsync(request.Id, ct)
             ?? throw new NotFoundException(nameof(Product), request.Id);
 
-        product.Deactivate();
-        productRepository.Update(product);
+        productRepository.Remove(product);
         await unitOfWork.SaveChangesAsync(ct);
     }
 }
