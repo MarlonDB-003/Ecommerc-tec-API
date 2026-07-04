@@ -40,12 +40,13 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddCors(options =>
 {
+    var allowedOrigins = builder.Configuration
+        .GetSection("Cors:AllowedOrigins")
+        .Get<string[]>()
+        ?? ["http://localhost:5173", "http://localhost:3000", "http://localhost:8080", "http://localhost"];
+
     options.AddPolicy("FrontendPolicy", policy =>
-        policy.WithOrigins(
-            "http://localhost:5173",
-            "http://localhost:3000",
-            "http://localhost:8080",
-            "http://localhost")
+        policy.WithOrigins(allowedOrigins)
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials());

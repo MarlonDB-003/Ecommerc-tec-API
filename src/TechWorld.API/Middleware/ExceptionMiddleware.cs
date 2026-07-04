@@ -27,11 +27,11 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
         {
             ValidationException ve => (400, "Erro de validação", string.Join("; ", ve.Errors.Select(e => e.ErrorMessage))),
             NotFoundException nfe => (404, "Não encontrado", nfe.Message),
-            ForbiddenException => (403, "Acesso negado", exception.Message),
+            ForbiddenException => (403, "Acesso negado", env.IsDevelopment() ? exception.Message : "Acesso negado a este recurso."),
             ConflictException => (409, "Conflito", exception.Message),
             UnauthorizedAccessException => (401, "Não autorizado", exception.Message),
             DomainException => (422, "Regra de negócio", exception.Message),
-            InvalidOperationException => (400, "Operação inválida", exception.Message),
+            InvalidOperationException => (400, "Operação inválida", env.IsDevelopment() ? exception.Message : "Operação não permitida."),
             DbUpdateException dbu => (500, "Erro de banco de dados", env.IsDevelopment()
                 ? dbu.InnerException?.Message ?? dbu.Message
                 : "Ocorreu um erro ao processar sua solicitação."),
