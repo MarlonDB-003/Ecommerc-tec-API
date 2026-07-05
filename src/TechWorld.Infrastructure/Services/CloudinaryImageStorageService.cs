@@ -15,7 +15,7 @@ public class CloudinaryImageStorageService : IImageStorageService
         var apiKey = configuration["Cloudinary:ApiKey"];
         var apiSecret = configuration["Cloudinary:ApiSecret"];
 
-        if (cloudName is not null && apiKey is not null && apiSecret is not null)
+        if (!string.IsNullOrEmpty(cloudName) && !string.IsNullOrEmpty(apiKey) && !string.IsNullOrEmpty(apiSecret))
         {
             _cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret))
             {
