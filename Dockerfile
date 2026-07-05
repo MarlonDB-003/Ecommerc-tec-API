@@ -21,10 +21,7 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
-ENV ASPNETCORE_URLS=http://+:5274
-
 # Run as non-root (the aspnet image ships with an 'app' user)
 USER app
 
-EXPOSE 5274
 ENTRYPOINT ["dotnet", "TechWorld.API.dll"]
