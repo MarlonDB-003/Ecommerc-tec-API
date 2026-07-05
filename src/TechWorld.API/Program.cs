@@ -1,6 +1,8 @@
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi;
 using Serilog;
@@ -11,6 +13,11 @@ using TechWorld.Infrastructure.Identity;
 using TechWorld.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Support Railway's dynamic PORT env var
+var port = Environment.GetEnvironmentVariable("PORT");
+if (port is not null)
+    builder.WebHost.UseUrls($"http://+:{port}");
 
 builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
@@ -75,25 +82,37 @@ builder.Services.AddRateLimiter(options =>
 
 var app = builder.Build();
 
+// Trust Railway's reverse proxy headers
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
 app.UseMiddleware<ExceptionMiddleware>();
 
-if (app.Environment.IsDevelopment())
+// Run migrations and seed in all environments
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TechWorld API v1"));
-
-    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+    await db.Database.MigrateAsync();
     await DataSeeder.SeedAsync(db, userManager, configuration);
+}
+
+// Swagger available in all environments (useful for evaluators)
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TechWorld API v1"));
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
 }
 else
 {
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseCors("FrontendPolicy");
 app.UseRateLimiter();
 app.UseAuthentication();
