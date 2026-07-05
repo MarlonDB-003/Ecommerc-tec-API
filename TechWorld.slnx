@@ -5,4 +5,7 @@
     <Project Path="src/TechWorld.Domain/TechWorld.Domain.csproj" />
     <Project Path="src/TechWorld.Infrastructure/TechWorld.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TechWorld.UnitTests/TechWorld.UnitTests.csproj" />
+  </Folder>
 </Solution>
