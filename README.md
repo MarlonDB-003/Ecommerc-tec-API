@@ -1,5 +1,8 @@
 # TechWorld API
 
+[![Coverage Report](https://github.com/MarlonDB-003/Ecommerc-tec-API/actions/workflows/coverage.yml/badge.svg)](https://marlondb-003.github.io/Ecommerc-tec-API/)
+[![Tests](https://img.shields.io/badge/tests-201%20passing-brightgreen)](https://github.com/MarlonDB-003/Ecommerc-tec-API/actions/workflows/coverage.yml)
+
 REST API de e-commerce para loja de produtos de tecnologia. Construída com .NET 10, Clean Architecture, CQRS e PostgreSQL. Servida em produção através do Caddy (HTTPS automático via Let's Encrypt).
 
 ## Funcionalidades
