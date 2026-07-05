@@ -48,3 +48,4 @@ coverage/
 
 ## Visual Studio Code
 .vscode/
+coverage-report/
