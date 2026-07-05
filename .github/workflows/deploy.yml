@@ -1,0 +1,63 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches: [main]
+
+env:
+  IMAGE: ghcr.io/marlondb-003/ecommerc-tec-api:latest
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE }}
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          envs: GHCR_TOKEN,DB_PASSWORD,JWT_SECRET,SEED_ADMIN_PASSWORD,IMAGE
+          script: |
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u marlondb-003 --password-stdin
+            docker pull $IMAGE
+            docker stop techworld-api || true
+            docker rm techworld-api || true
+            docker run -d \
+              --name techworld-api \
+              --restart always \
+              -p 8080:8080 \
+              -e ASPNETCORE_ENVIRONMENT=Production \
+              -e "ConnectionStrings__Default=Host=techworld-db.cvqmiy20gtna.us-east-2.rds.amazonaws.com;Port=5432;Database=techworld;Username=postgres;Password=${DB_PASSWORD}" \
+              -e "JwtSettings__Secret=${JWT_SECRET}" \
+              -e JwtSettings__Issuer=TechWorldAPI \
+              -e JwtSettings__Audience=TechWorldClient \
+              -e "Seed__AdminPassword=${SEED_ADMIN_PASSWORD}" \
+              $IMAGE
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SEED_ADMIN_PASSWORD: ${{ secrets.SEED_ADMIN_PASSWORD }}
+          IMAGE: ${{ env.IMAGE }}
