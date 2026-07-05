@@ -56,6 +56,7 @@ jobs:
               -e JwtSettings__Issuer=TechWorldAPI \
               -e JwtSettings__Audience=TechWorldClient \
               -e "Seed__AdminPassword=${SEED_ADMIN_PASSWORD}" \
+              -e CookieSettings__Secure=false \
               $IMAGE
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -10,12 +10,12 @@ namespace TechWorld.API.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-public class AuthController(IMediator mediator, IWebHostEnvironment env) : ControllerBase
+public class AuthController(IMediator mediator, IWebHostEnvironment env, IConfiguration configuration) : ControllerBase
 {
     private CookieOptions AuthCookieOptions => new()
     {
         HttpOnly = true,
-        Secure = !env.IsDevelopment(),
+        Secure = configuration.GetValue("CookieSettings:Secure", !env.IsDevelopment()),
         SameSite = SameSiteMode.Strict,
         Expires = DateTimeOffset.UtcNow.AddHours(1),
         Path = "/"
@@ -46,7 +46,7 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
         Response.Cookies.Append("access_token", "", new CookieOptions
         {
             HttpOnly = true,
-            Secure = !env.IsDevelopment(),
+            Secure = configuration.GetValue("CookieSettings:Secure", !env.IsDevelopment()),
             SameSite = SameSiteMode.Strict,
             Expires = DateTimeOffset.UnixEpoch,
             Path = "/"
