@@ -38,7 +38,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          envs: GHCR_TOKEN,DB_PASSWORD,JWT_SECRET,SEED_ADMIN_PASSWORD,IMAGE
+          envs: GHCR_TOKEN,DB_PASSWORD,JWT_SECRET,SEED_ADMIN_PASSWORD,IMAGE,CLOUDINARY_CLOUD_NAME,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET
           script: |
             echo "$GHCR_TOKEN" | docker login ghcr.io -u marlondb-003 --password-stdin
             docker network create techworld-net || true
@@ -57,6 +57,9 @@ jobs:
               -e JwtSettings__Audience=TechWorldClient \
               -e "Seed__AdminPassword=${SEED_ADMIN_PASSWORD}" \
               -e CookieSettings__Secure=false \
+              -e "Cloudinary__CloudName=${CLOUDINARY_CLOUD_NAME}" \
+              -e "Cloudinary__ApiKey=${CLOUDINARY_API_KEY}" \
+              -e "Cloudinary__ApiSecret=${CLOUDINARY_API_SECRET}" \
               $IMAGE
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -64,3 +67,6 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           SEED_ADMIN_PASSWORD: ${{ secrets.SEED_ADMIN_PASSWORD }}
           IMAGE: ${{ env.IMAGE }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}

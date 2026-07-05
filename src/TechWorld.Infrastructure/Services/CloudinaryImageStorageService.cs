@@ -7,22 +7,28 @@ namespace TechWorld.Infrastructure.Services;
 
 public class CloudinaryImageStorageService : IImageStorageService
 {
-    private readonly Cloudinary _cloudinary;
+    private readonly Cloudinary? _cloudinary;
 
     public CloudinaryImageStorageService(IConfiguration configuration)
     {
-        var cloudName = configuration["Cloudinary:CloudName"] ?? throw new InvalidOperationException("Cloudinary:CloudName não configurado.");
-        var apiKey = configuration["Cloudinary:ApiKey"] ?? throw new InvalidOperationException("Cloudinary:ApiKey não configurado.");
-        var apiSecret = configuration["Cloudinary:ApiSecret"] ?? throw new InvalidOperationException("Cloudinary:ApiSecret não configurado.");
+        var cloudName = configuration["Cloudinary:CloudName"];
+        var apiKey = configuration["Cloudinary:ApiKey"];
+        var apiSecret = configuration["Cloudinary:ApiSecret"];
 
-        _cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret))
+        if (cloudName is not null && apiKey is not null && apiSecret is not null)
         {
-            Api = { Secure = true }
-        };
+            _cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret))
+            {
+                Api = { Secure = true }
+            };
+        }
     }
 
     public async Task<string> UploadAsync(Stream fileStream, string fileName, CancellationToken ct = default)
     {
+        if (_cloudinary is null)
+            throw new InvalidOperationException("Cloudinary não configurado. Defina Cloudinary:CloudName, ApiKey e ApiSecret.");
+
         var uploadParams = new ImageUploadParams
         {
             File = new FileDescription(fileName, fileStream),
