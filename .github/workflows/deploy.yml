@@ -41,11 +41,13 @@ jobs:
           envs: GHCR_TOKEN,DB_PASSWORD,JWT_SECRET,SEED_ADMIN_PASSWORD,IMAGE
           script: |
             echo "$GHCR_TOKEN" | docker login ghcr.io -u marlondb-003 --password-stdin
+            docker network create techworld-net || true
             docker pull $IMAGE
             docker stop techworld-api || true
             docker rm techworld-api || true
             docker run -d \
               --name techworld-api \
+              --network techworld-net \
               --restart always \
               -p 8080:8080 \
               -e ASPNETCORE_ENVIRONMENT=Production \
